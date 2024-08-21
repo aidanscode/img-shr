@@ -4,15 +4,17 @@
 <div class="container">
   <h2>Latest Posts</h2>
   <div class="row gy-4">
+    {{range .}}
     <div class="col-6 col-md-4 col-lg-3 col-xl-2">
       <div class="card">
-        <img src="https://placehold.co/300x200" class="card-img-top" alt="Example image">
+        <img src="{{.ImgPath}}" class="card-img-top" alt="Example image">
         <div class="card-body">
-          <h5 class="card-title">Some post</h5>
-          <p class="card-text">by Aidan</p>
+          <h5 class="card-title">{{.Title}}</h5>
+          <p class="card-text">by {{.AuthorId}}</p>
         </div>
       </div>
     </div>
+    {{end}}
   </div>
 </div>
 {{end}}
