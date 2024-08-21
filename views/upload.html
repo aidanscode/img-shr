@@ -1,0 +1,24 @@
+{{define "title"}}Upload Image{{end}}
+
+{{define "layout-content"}}
+<div class="container">
+  <h2>Upload New Image</h2>
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6 border">
+      <form action="#">
+        <div class="mb-3">
+          <label class="form-label" for="title">Image Title</label>
+          <input class="form-control" type="text" id="title" name="title" placeholder="Image Title" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="image">Select Image</label>
+          <input class="form-control" type="file" id="image" name="image" accept="image/png, image/gif, image/jpeg" />
+        </div>
+
+        <button class="btn btn-primary mb-3" type="submit">Upload</button>
+      </form>
+    </div>
+  </div>
+</div>
+{{end}}
