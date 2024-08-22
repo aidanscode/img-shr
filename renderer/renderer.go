@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -13,7 +14,12 @@ type Renderer struct {
 }
 
 func (r *Renderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	return r.templates[name].ExecuteTemplate(w, "layout", data)
+	split := strings.Split(name, ".")
+	if len(split) == 1 {
+		return r.templates[name].ExecuteTemplate(w, "layout", data)
+	} else {
+		return r.templates[split[0]].ExecuteTemplate(w, split[1], data)
+	}
 }
 
 func NewRenderer() *Renderer {

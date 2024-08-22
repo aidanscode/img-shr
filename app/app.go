@@ -17,5 +17,6 @@ func NewApp() *App {
 
 func (app *App) HandleRoutes(e *echo.Echo) {
 	e.GET("/", app.Handler.Home)
-	e.GET("/upload", app.Handler.Upload)
+	e.GET("/upload", app.Handler.UploadForm)
+	e.POST("/upload", app.Handler.Upload)
 }

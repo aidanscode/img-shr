@@ -5,20 +5,28 @@
   <h2>Upload New Image</h2>
   <div class="row justify-content-center">
     <div class="col-12 col-md-8 col-lg-6 border">
-      <form action="#">
-        <div class="mb-3">
-          <label class="form-label" for="title">Image Title</label>
-          <input class="form-control" type="text" id="title" name="title" placeholder="Image Title" />
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label" for="image">Select Image</label>
-          <input class="form-control" type="file" id="image" name="image" accept="image/png, image/gif, image/jpeg" />
-        </div>
-
-        <button class="btn btn-primary mb-3" type="submit">Upload</button>
-      </form>
+      {{template "upload-form" .}}
     </div>
   </div>
 </div>
+{{end}}
+
+{{define "upload-form"}}
+<form hx-post="/upload" hx-swap="outerHTML" hx-target="this">
+  <div class="mb-3">
+    <label class="form-label" for="title" >Image Title</label>
+    <input class="form-control" type="text" id="title" name="title" placeholder="Image Title" value="{{.Title}}" required />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="image">Select Image</label>
+    <input class="form-control" type="file" id="image" name="image" accept="image/png, image/gif, image/jpeg" />
+  </div>
+
+  {{if ne .Error ""}}
+  <p class="text-danger">Error: {{.Error}}</p>
+  {{end}}
+
+  <button class="btn btn-primary mb-3" type="submit">Upload</button>
+</form>
 {{end}}

@@ -14,7 +14,3 @@ type Handler struct {
 func (h *Handler) Home(c echo.Context) error {
 	return c.Render(http.StatusOK, "index", h.PostService.Latest(5))
 }
-
-func (h *Handler) Upload(c echo.Context) error {
-	return c.Render(http.StatusOK, "upload", nil)
-}
