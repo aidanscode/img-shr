@@ -9,6 +9,7 @@ import (
 func main() {
 	e := echo.New()
 	e.Renderer = renderer.NewRenderer()
+	e.Static("/static", "static")
 
 	app := app.NewApp()
 	app.HandleRoutes(e)
