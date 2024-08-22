@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/AidansCode/img-shr/app/db"
 	"github.com/AidansCode/img-shr/app/handler"
 	"github.com/AidansCode/img-shr/app/service"
 	"github.com/labstack/echo/v4"
@@ -10,8 +11,16 @@ type App struct {
 	Handler handler.Handler
 }
 
-func NewApp() *App {
-	handler := handler.Handler{PostService: service.NewPostService()}
+func NewApp(dbPath string) *App {
+	database, err := db.NewDatabase(dbPath)
+	if err != nil {
+		panic(err)
+	}
+	database.Migrate()
+
+	handler := handler.Handler{
+		PostService: service.NewPostService(&database),
+	}
 	return &App{Handler: handler}
 }
 

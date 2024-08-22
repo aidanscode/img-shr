@@ -11,7 +11,7 @@ func main() {
 	e.Renderer = renderer.NewRenderer()
 	e.Static("/static", "static")
 
-	app := app.NewApp()
+	app := app.NewApp("imgshr.sqlite")
 	app.HandleRoutes(e)
 
 	e.Logger.Fatal(e.Start(":8000"))
