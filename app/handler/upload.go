@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -28,31 +27,32 @@ func (h *Handler) UploadForm(c echo.Context) error {
 func (h *Handler) Upload(c echo.Context) error {
 	title := strings.TrimSpace(c.FormValue("title"))
 	if len(title) == 0 {
-		return c.Render(http.StatusOK, "upload.upload-form", UploadFormData{Title: title, Error: "Missing title"})
+		return c.Render(http.StatusUnprocessableEntity, "upload.upload-form", UploadFormData{Title: title, Error: "Missing title"})
 	}
 
 	file, err := c.FormFile("image")
 	if err != nil {
-		return c.Render(http.StatusOK, "upload.upload-form", UploadFormData{Title: title, Error: "Missing image"})
+		return c.Render(http.StatusUnprocessableEntity, "upload.upload-form", UploadFormData{Title: title, Error: "Missing image"})
 	}
 	src, err := file.Open()
 	if err != nil {
-		return c.Render(http.StatusOK, "upload.upload-form", UploadFormData{Title: title, Error: "Invalid image uploaded"})
+		return c.Render(http.StatusUnprocessableEntity, "upload.upload-form", UploadFormData{Title: title, Error: "Invalid image uploaded"})
 	}
 	defer src.Close()
 
 	mimeType, err := validateMimeType(src)
 	if err != nil {
-		return c.Render(http.StatusOK, "upload.upload-form", UploadFormData{Title: title, Error: err.Error()})
+		return c.Render(http.StatusUnprocessableEntity, "upload.upload-form", UploadFormData{Title: title, Error: err.Error()})
 	}
 
 	p := model.NewPost(1, title)
 	p, err = h.PostService.Save(p, &src, mimeType)
 	if err != nil {
-		return c.Render(http.StatusOK, "upload.upload-form", UploadFormData{Title: title, Error: "Error saving new post"})
+		return c.Render(http.StatusInternalServerError, "upload.upload-form", UploadFormData{Title: title, Error: "Error saving new post"})
 	}
 
-	return c.Render(http.StatusOK, "upload.upload-form", UploadFormData{Title: title, Error: fmt.Sprintf("Okay! Saved id: %d", p.Id)})
+	c.Response().Header().Set("HX-Redirect", p.GetPostUrl())
+	return c.String(http.StatusNoContent, "")
 }
 
 func validateMimeType(f multipart.File) (string, error) {

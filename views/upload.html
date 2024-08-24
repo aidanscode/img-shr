@@ -29,4 +29,14 @@
 
   <button class="btn btn-primary mb-3" type="submit">Upload</button>
 </form>
+
+<script>
+  document.body.addEventListener('htmx:beforeOnLoad', e => {
+    const status = e.detail.xhr.status
+    if (status == 422 || status == 500) {
+      e.detail.shouldSwap = true
+      e.detail.isError = false
+    }
+  });
+</script>
 {{end}}
