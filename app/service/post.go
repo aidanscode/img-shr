@@ -14,10 +14,11 @@ type PostService interface {
 
 type postService struct {
 	Database db.Database
+	newImageDirectory string
 }
 
-func NewPostService(database *db.Database) PostService {
-	return &postService{Database: *database}
+func NewPostService(database *db.Database, newImageDirectory string) PostService {
+	return &postService{Database: *database, newImageDirectory: newImageDirectory}
 }
 
 func (ps *postService) Latest(n uint) ([]model.Post, error) {
