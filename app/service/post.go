@@ -43,7 +43,7 @@ func (ps *postService) Latest(n uint) ([]model.Post, error) {
 	var posts []model.Post
 	for rows.Next() {
 		var post model.Post
-		if err := rows.Scan(&post.Id, &post.AuthorId, &post.Title, &post.ImgPath, &post.CreatedAt); err != nil {
+		if err := rows.Scan(&post.Id, &post.Title, &post.ImgPath, &post.CreatedAt); err != nil {
 			return nil, err
 		}
 		posts = append(posts, post)
@@ -64,7 +64,7 @@ func (ps *postService) Get(id int) (*model.Post, error) {
 	}
 
 	var post model.Post
-	err = rows.Scan(&post.Id, &post.AuthorId, &post.Title, &post.ImgPath, &post.CreatedAt)
+	err = rows.Scan(&post.Id, &post.Title, &post.ImgPath, &post.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +97,7 @@ func (ps *postService) Update(p *model.Post) (*model.Post, error) {
 		return p, errors.New("post hasn't been saved yet")
 	}
 
-	_, err := ps.Database.Db.Exec("UPDATE posts SET author_id=?, title=?, img_path=?, created_at=? WHERE id=?", p.AuthorId, p.Title, p.ImgPath, p.CreatedAt, p.Id)
+	_, err := ps.Database.Db.Exec("UPDATE posts SET title=?, img_path=?, created_at=? WHERE id=?", p.Title, p.ImgPath, p.CreatedAt, p.Id)
 	if err != nil {
 		return p, err
 	}
@@ -110,7 +110,7 @@ func (ps *postService) saveToDb(p *model.Post) (*model.Post, error) {
 		return p, errors.New("post has already been saved")
 	}
 
-	res, err := ps.Database.Db.Exec("INSERT INTO posts VALUES (null, ?, ?, NULL, ?)", p.AuthorId, p.Title, p.CreatedAt)
+	res, err := ps.Database.Db.Exec("INSERT INTO posts VALUES (null, ?, NULL, ?)", p.Title, p.CreatedAt)
 	if err != nil {
 		return p, err
 	}

@@ -7,14 +7,13 @@ import (
 
 type Post struct {
 	Id int
-	AuthorId int
 	Title string
 	ImgPath string
 	CreatedAt time.Time
 }
 
-func NewPost(authorId int, title string) *Post {
-	p := &Post{AuthorId: authorId, Title: title, CreatedAt: time.Now()}
+func NewPost(title string) *Post {
+	p := &Post{Title: title, CreatedAt: time.Now()}
 	return p
 }
 

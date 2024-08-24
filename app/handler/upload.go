@@ -51,7 +51,7 @@ func (h *Handler) Upload(c echo.Context) error {
 		return c.Render(http.StatusUnprocessableEntity, "upload.upload-form", UploadFormData{Title: title, Error: err.Error()})
 	}
 
-	p := model.NewPost(1, title)
+	p := model.NewPost(title)
 	p, err = h.PostService.Save(p, &src, mimeType)
 	if err != nil {
 		return c.Render(http.StatusInternalServerError, "upload.upload-form", UploadFormData{Title: title, Error: "Error saving new post"})

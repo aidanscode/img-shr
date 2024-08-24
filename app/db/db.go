@@ -16,27 +16,12 @@ type Database struct {
 }
 
 func (d *Database) Migrate() error {
-	createUsersTable := `
-		CREATE TABLE IF NOT EXISTS users(
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			email TEXT NOT NULL UNIQUE,
-			password TEXT NOT NULL,
-			created_at TIMESTAMP NOT NULL
-		)
-	`
-	_, createUsersError := d.Db.Exec(createUsersTable)
-	if createUsersError != nil {
-		return ErrMigrationFailure
-	}
-
 	createPostsTable := `
 		CREATE TABLE IF NOT EXISTS posts(
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			author_id INTEGER,
 			title TEXT NOT NULL,
 			img_path TEXT,
-			created_at TIMESTAMP NOT NULL,
-			FOREIGN KEY (author_id) REFERENCES users(id)
+			created_at TIMESTAMP NOT NULL
 		)
 	`
 	_, createPostsError := d.Db.Exec(createPostsTable)
