@@ -19,10 +19,11 @@ func NewApp(appConfig flags.AppFlags) *App {
 	database := getDatabase(appConfig)
 	imageDirectory := getImageDirectory(appConfig)
 
-	handler := handler.Handler{
-		PostService: service.NewPostService(database, imageDirectory),
-	}
-	return &App{Handler: handler}
+	handler := handler.NewHandler(
+		service.NewPostService(database, imageDirectory),
+		appConfig.MaxUploadSizeBytes,
+	)
+	return &App{Handler: *handler}
 }
 
 func (app *App) HandleRoutes(e *echo.Echo) {

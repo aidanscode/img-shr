@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -34,6 +35,11 @@ func (h *Handler) Upload(c echo.Context) error {
 	if err != nil {
 		return c.Render(http.StatusUnprocessableEntity, "upload.upload-form", UploadFormData{Title: title, Error: "Missing image"})
 	}
+
+	if file.Size > h.maxUploadSizeBytes {
+		return c.Render(http.StatusUnprocessableEntity, "upload.upload-form", UploadFormData{Title: title, Error: fmt.Sprintf("File size must be less than %v bytes", h.maxUploadSizeBytes)})
+	}
+
 	src, err := file.Open()
 	if err != nil {
 		return c.Render(http.StatusUnprocessableEntity, "upload.upload-form", UploadFormData{Title: title, Error: "Invalid image uploaded"})

@@ -7,11 +7,19 @@ import (
 
 type Handler struct {
 	PostService service.PostService
+	maxUploadSizeBytes int64
 }
 
 type ErrorResponse struct {
 	StatusCode int
 	ErrorMsg string
+}
+
+func NewHandler(postService service.PostService, maxUploadSizeBytes int64) *Handler {
+	return &Handler{
+		PostService: postService,
+		maxUploadSizeBytes: maxUploadSizeBytes,
+	}
 }
 
 func (h *Handler) renderError(c echo.Context, statusCode int, errorMsg string) error {
