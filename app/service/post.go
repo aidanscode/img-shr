@@ -13,8 +13,13 @@ import (
 	"github.com/AidansCode/img-shr/model"
 )
 
+var (
+	ErrNotFound = errors.New("post not found with given id")
+)
+
 type PostService interface {
 	Latest(n uint) ([]model.Post, error)
+	Get(id int) (*model.Post, error)
 	Save(p *model.Post, file *multipart.File, validatedMimeType string) (*model.Post, error)
 	Update(p *model.Post) (*model.Post, error)
 }
@@ -45,6 +50,26 @@ func (ps *postService) Latest(n uint) ([]model.Post, error) {
 	}
 
 	return posts, nil
+}
+
+func (ps *postService) Get(id int) (*model.Post, error) {
+	rows, err := ps.Database.Db.Query("SELECT * FROM posts WHERE img_path IS NOT NULL AND id = ?", id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	if !rows.Next() {
+		return nil, ErrNotFound
+	}
+
+	var post model.Post
+	err = rows.Scan(&post.Id, &post.AuthorId, &post.Title, &post.ImgPath, &post.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return &post, nil
 }
 
 func (ps *postService) Save(p *model.Post, file *multipart.File, validatedMimeType string) (*model.Post, error) {

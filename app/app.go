@@ -27,6 +27,8 @@ func NewApp(appConfig flags.AppFlags) *App {
 
 func (app *App) HandleRoutes(e *echo.Echo) {
 	e.GET("/", app.Handler.Home)
+	e.GET("/i/:id", app.Handler.View)
+	e.GET("/i/:id/raw", app.Handler.ViewRaw)
 	e.GET("/upload", app.Handler.UploadForm)
 	e.POST("/upload", app.Handler.Upload)
 }

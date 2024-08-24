@@ -1,0 +1,14 @@
+{{define "title"}}{{.Title}}{{end}}
+
+{{define "layout-content"}}
+<div class="container">
+  <h2>{{.Title}}</h2>
+  <div class="d-flex justify-content-center">
+    <a href="{{.DirectUrl}}" target="_blank">
+      <div class="border border-3">
+        <img style="max-height: 500px; max-width: 500px;" src="{{.DirectUrl}}" alt="Picture with title {{.Title}}"/>
+      </div>
+    </a>
+  </div>
+</div>
+{{end}}

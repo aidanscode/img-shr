@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Post struct {
 	Id int
@@ -13,4 +16,8 @@ type Post struct {
 func NewPost(authorId int, title string) *Post {
 	p := &Post{AuthorId: authorId, Title: title, CreatedAt: time.Now()}
 	return p
+}
+
+func (p *Post) GetDirectUrl() string {
+	return fmt.Sprintf("/i/%d/raw", p.Id)
 }

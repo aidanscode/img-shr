@@ -26,6 +26,7 @@ func NewRenderer() *Renderer {
 	templates := make(map[string]*template.Template)
 	templates["index"] = tryLoadTemplateWithLayout("index")
 	templates["upload"] = tryLoadTemplateWithLayout("upload")
+	templates["image"] = tryLoadTemplateWithLayout("image")
 	templates["error"] = tryLoadTemplate("error")
 
 	renderer := &Renderer{
