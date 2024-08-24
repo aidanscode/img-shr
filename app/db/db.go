@@ -11,15 +11,11 @@ var (
 	ErrMigrationFailure	= errors.New("failed to initialize database")
 )
 
-type Database interface {
-	Migrate() error
+type Database struct {
+	Db *sql.DB
 }
 
-type database struct {
-	db *sql.DB
-}
-
-func (d *database) Migrate() error {
+func (d *Database) Migrate() error {
 	createUsersTable := `
 		CREATE TABLE IF NOT EXISTS users(
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,7 +24,7 @@ func (d *database) Migrate() error {
 			created_at TIMESTAMP NOT NULL
 		)
 	`
-	_, createUsersError := d.db.Exec(createUsersTable)
+	_, createUsersError := d.Db.Exec(createUsersTable)
 	if createUsersError != nil {
 		return ErrMigrationFailure
 	}
@@ -43,7 +39,7 @@ func (d *database) Migrate() error {
 			FOREIGN KEY (author_id) REFERENCES users(id)
 		)
 	`
-	_, createPostsError := d.db.Exec(createPostsTable)
+	_, createPostsError := d.Db.Exec(createPostsTable)
 	if createPostsError != nil {
 		return ErrMigrationFailure
 	}
@@ -51,12 +47,12 @@ func (d *database) Migrate() error {
 	return nil
 }
 
-func NewDatabase(path string) (Database, error) {
+func NewDatabase(path string) (*Database, error) {
 	sqlite, err := sql.Open("sqlite3", path)
 	if err != nil {
 		return nil, err
 	}
 
-	database := database{db: sqlite}
+	database := Database{Db: sqlite}
 	return &database, nil
 }

@@ -19,7 +19,7 @@ func NewApp(dbPath string) *App {
 	database.Migrate()
 
 	handler := handler.Handler{
-		PostService: service.NewPostService(&database),
+		PostService: service.NewPostService(database),
 	}
 	return &App{Handler: handler}
 }
