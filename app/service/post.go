@@ -8,7 +8,7 @@ import (
 )
 
 type PostService interface {
-	Latest(n int) []model.Post
+	Latest(n uint) ([]model.Post, error)
 	Save(p *model.Post) (*model.Post, error)
 }
 
@@ -20,12 +20,23 @@ func NewPostService(database *db.Database) PostService {
 	return &postService{Database: *database}
 }
 
-func (ps *postService) Latest(n int) []model.Post {
-	posts := []model.Post{
-		{Id: 1, AuthorId: 1, Title: "By Me", ImgPath: "https://placehold.co/300x200"},
-		{Id: 2, AuthorId: 2, Title: "Ricky Original", ImgPath: "https://placehold.co/300x200"},
+func (ps *postService) Latest(n uint) ([]model.Post, error) {
+	rows, err := ps.Database.Db.Query("SELECT * FROM posts ORDER BY created_at DESC LIMIT ?", n)
+	if err != nil {
+		return nil, err
 	}
-	return posts
+	defer rows.Close()
+
+	var posts []model.Post
+	for rows.Next() {
+		var post model.Post
+		if err := rows.Scan(&post.Id, &post.AuthorId, &post.Title, &post.ImgPath, &post.CreatedAt); err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
+	}
+
+	return posts, nil
 }
 
 func (ps *postService) Save(p *model.Post) (*model.Post, error) {

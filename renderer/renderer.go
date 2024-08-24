@@ -26,6 +26,7 @@ func NewRenderer() *Renderer {
 	templates := make(map[string]*template.Template)
 	templates["index"] = tryLoadTemplateWithLayout("index")
 	templates["upload"] = tryLoadTemplateWithLayout("upload")
+	templates["error"] = tryLoadTemplate("error")
 
 	renderer := &Renderer{
 		templates: templates,
@@ -35,6 +36,15 @@ func NewRenderer() *Renderer {
 
 func tryLoadTemplateWithLayout(templateName string) *template.Template {
 	template, err := template.New("").ParseFiles(fmt.Sprintf("views/%s.html", templateName), "views/navbar.html", "views/layout.html")
+	if err != nil {
+		panic(err)
+	}
+
+	return template
+}
+
+func tryLoadTemplate(templateName string) *template.Template {
+	template, err := template.New("").ParseFiles(fmt.Sprintf("views/%s.html", templateName))
 	if err != nil {
 		panic(err)
 	}
