@@ -10,7 +10,7 @@ type Post struct {
 	CreatedAt time.Time
 }
 
-func NewPost(authorId int, title string, imgPath string) *Post {
-	p := &Post{AuthorId: authorId, Title: title, ImgPath: imgPath, CreatedAt: time.Now()}
+func NewPost(authorId int, title string) *Post {
+	p := &Post{AuthorId: authorId, Title: title, CreatedAt: time.Now()}
 	return p
 }

@@ -34,7 +34,7 @@ func (d *Database) Migrate() error {
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			author_id INTEGER,
 			title TEXT NOT NULL,
-			img_path TEXT NOT NULL UNIQUE,
+			img_path TEXT,
 			created_at TIMESTAMP NOT NULL,
 			FOREIGN KEY (author_id) REFERENCES users(id)
 		)

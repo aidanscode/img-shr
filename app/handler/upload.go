@@ -12,6 +12,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type UploadFormData struct {
+	Title string
+	Error string
+}
+
 var allowedImageTypes = []string{
 	"image/jpeg", "image/png", "image/gif",
 }
@@ -36,12 +41,13 @@ func (h *Handler) Upload(c echo.Context) error {
 	}
 	defer src.Close()
 
-	if err := validateMimeType(src); err != nil {
+	mimeType, err := validateMimeType(src)
+	if err != nil {
 		return c.Render(http.StatusOK, "upload.upload-form", UploadFormData{Title: title, Error: err.Error()})
 	}
 
-	p := model.NewPost(1, title, "https://placehold.co/300x200")
-	p, err = h.PostService.Save(p)
+	p := model.NewPost(1, title)
+	p, err = h.PostService.Save(p, &src, mimeType)
 	if err != nil {
 		return c.Render(http.StatusOK, "upload.upload-form", UploadFormData{Title: title, Error: "Error saving new post"})
 	}
@@ -49,23 +55,19 @@ func (h *Handler) Upload(c echo.Context) error {
 	return c.Render(http.StatusOK, "upload.upload-form", UploadFormData{Title: title, Error: fmt.Sprintf("Okay! Saved id: %d", p.Id)})
 }
 
-func validateMimeType(f multipart.File) error {
+func validateMimeType(f multipart.File) (string, error) {
 	contents, err := io.ReadAll(f)
+	defer f.Seek(0, io.SeekStart)
 	if err != nil {
-		return errors.New("invalid image uploaded")
+		return "", errors.New("invalid image uploaded")
 	}
 
 	mimeType := http.DetectContentType(contents)
 	for _, allowedMimeType := range allowedImageTypes {
 		if allowedMimeType == mimeType {
-			return nil
+			return allowedMimeType, nil
 		}
 	}
 
-	return errors.New("invalid file type. Must be one of: " + strings.Join(allowedImageTypes, ", "))
-}
-
-type UploadFormData struct {
-	Title string
-	Error string
+	return "", errors.New("invalid file type. Must be one of: " + strings.Join(allowedImageTypes, ", "))
 }
