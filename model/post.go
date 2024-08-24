@@ -18,6 +18,10 @@ func NewPost(authorId int, title string) *Post {
 	return p
 }
 
+func (p *Post) GetPostUrl() string {
+	return fmt.Sprintf("/i/%d", p.Id)
+}
+
 func (p *Post) GetDirectUrl() string {
 	return fmt.Sprintf("/i/%d/raw", p.Id)
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func (h *Handler) Home(c echo.Context) error {
-	posts, err := h.PostService.Latest(5)
+	posts, err := h.PostService.Latest(25)
 	if err != nil {
 		return h.renderError(c, http.StatusInternalServerError, "Failed to load latest posts")
 	}
